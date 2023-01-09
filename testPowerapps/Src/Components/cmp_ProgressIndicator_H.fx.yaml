@@ -1,0 +1,193 @@
+cmp_ProgressIndicator_H As CanvasComponent:
+    Fill: =RGBA(0, 0, 0, 0)
+    Height: =170
+    IconColor: =Black
+    IconScale: =0.6
+    ImagePadding: =0
+    IsSquareShape: =true
+    IsStatusVisible: =true
+    Items: |-
+        =Table(
+            {Title: "Erik Erickson", Subtitle: "Initial Requester", Icon: Icon.Person, Image: Blank(), Status: "Success"},
+            {Title: "Sally Summers", Subtitle: "Supervisor", Icon: Icon.Person, Image: Blank(), Status: "Success"},
+            {Title: "Matthew Devaney", Subtitle: "Manager", Icon: Icon.Person, Image: SampleImage, IsCurrent: true},
+            {Title: "Executive Team", Subtitle: "", Icon: Icon.People, Image: Blank()}
+        )
+    LineColor: =RGBA(0, 0, 0, 1)
+    ShapeBorderColor: =Transparent
+    ShapeBorderColorCurrent: =RGBA(221, 79, 14, 1)
+    ShapeBorderThickness: =3
+    ShapeFill: =RGBA(219,219,219, 1)
+    ShapeHeightWidth: =60
+    SpacingBorderToShape: =15
+    SpacingShapeToTitle: =15
+    SpacingTitleToSubtitle: =5
+    StatusBorderColor: =White
+    StatusColor: =Black
+    StatusColorFail: =White
+    StatusColorSuccess: =White
+    StatusFill: =RGBA(219,219,219,1)
+    StatusFillFail: =RGBA(216, 59, 1, 1)
+    StatusFillSuccess: =RGBA(54, 176, 75, 1)
+    SubtitleSize: =13
+    TitleSize: =13
+    Value: |-
+        =If(
+            CountIf(cmp_ProgressIndicator_H.Items, Status="Success")=CountRows(cmp_ProgressIndicator_H.Items), "Success",
+            CountIf(cmp_ProgressIndicator_H.Items, Status="Fail")>0, "Fail",
+            Blank()
+        )
+    Width: =700
+    X: =0
+    Y: =0
+    ZIndex: =1
+
+    gal_ProgressIndicator_H As gallery.galleryVertical:
+        Height: =cmp_ProgressIndicator_H.Height
+        Items: =cmp_ProgressIndicator_H.Items
+        Layout: =Layout.Vertical
+        TemplatePadding: =0
+        TemplateSize: =170
+        Width: =cmp_ProgressIndicator_H.Width
+        WrapCount: =CountRows(cmp_ProgressIndicator_H.Items)
+        ZIndex: =1
+
+        ico_LineTop_H As rectangle:
+            Fill: =cmp_ProgressIndicator_H.LineColor
+            Height: =ico_Circle_H.BorderThickness
+            OnSelect: =Select(Parent)
+            Visible: =!(ThisItem.Title=First(cmp_ProgressIndicator_H.Items).Title)
+            Width: =gal_ProgressIndicator_H.TemplateWidth/2
+            Y: =ico_Circle_H.Y+(ico_Circle_H.Width-Self.Height)/2
+            ZIndex: =1
+
+        ico_LineBottom_H As rectangle:
+            Fill: =cmp_ProgressIndicator_H.LineColor
+            Height: =ico_Circle_H.BorderThickness
+            OnSelect: =Select(Parent)
+            Visible: =!(ThisItem.Title=Last(cmp_ProgressIndicator_H.Items).Title)
+            Width: =gal_ProgressIndicator_H.TemplateWidth/2
+            X: =gal_ProgressIndicator_H.TemplateWidth/2
+            Y: =ico_Circle_H.Y+(ico_Circle_H.Height-Self.Height)/2
+            ZIndex: =2
+
+        ico_Circle_H As circle:
+            BorderColor: =If(ThisItem.IsCurrent, cmp_ProgressIndicator_H.ShapeBorderColorCurrent, cmp_ProgressIndicator_H.ShapeBorderColor)
+            BorderStyle: =If(ThisItem.Image=Blank(), BorderStyle.Solid, BorderStyle.None)
+            BorderThickness: =cmp_ProgressIndicator_H.ShapeBorderThickness
+            Fill: =cmp_ProgressIndicator_H.ShapeFill
+            Height: =cmp_ProgressIndicator_H.ShapeHeightWidth
+            OnSelect: =Select(Parent)
+            Visible: =!cmp_ProgressIndicator_H.IsSquareShape
+            Width: =Self.Height
+            X: =(gal_ProgressIndicator_H.TemplateWidth-Self.Width)/2
+            Y: =cmp_ProgressIndicator_H.SpacingBorderToShape
+            ZIndex: =3
+
+        ico_Square_H As rectangle:
+            BorderColor: =If(ThisItem.IsCurrent, cmp_ProgressIndicator_H.ShapeBorderColorCurrent, cmp_ProgressIndicator_H.ShapeBorderColor)
+            BorderStyle: =If(ThisItem.Image=Blank(), BorderStyle.Solid, BorderStyle.None)
+            BorderThickness: =cmp_ProgressIndicator_H.ShapeBorderThickness
+            Fill: =cmp_ProgressIndicator_H.ShapeFill
+            Height: =cmp_ProgressIndicator_H.ShapeHeightWidth
+            Visible: =cmp_ProgressIndicator_H.IsSquareShape
+            Width: =Self.Height
+            X: =(gal_ProgressIndicator_H.TemplateWidth-Self.Width)/2
+            Y: =cmp_ProgressIndicator_H.SpacingBorderToShape
+            ZIndex: =4
+
+        lbl_Title_H As label:
+            Align: =Align.Center
+            AutoHeight: =true
+            Font: =Font.'Segoe UI'
+            FontWeight: =Semibold
+            Height: =lbl_Title_H.Size
+            PaddingBottom: =cmp_ProgressIndicator_H.SpacingTitleToSubtitle/2
+            Size: =cmp_ProgressIndicator_H.TitleSize
+            Text: =ThisItem.Title
+            VerticalAlign: =VerticalAlign.Top
+            Width: =gal_ProgressIndicator_H.TemplateWidth
+            Y: =ico_Circle_H.Y+ico_Circle_H.Height+cmp_ProgressIndicator_H.SpacingShapeToTitle
+            ZIndex: =5
+
+        lbl_Subtitle_H As label:
+            Align: =Align.Center
+            AutoHeight: =true
+            Font: =Font.'Segoe UI'
+            Height: =Self.Size
+            PaddingTop: =cmp_ProgressIndicator_H.SpacingTitleToSubtitle/2
+            Size: =cmp_ProgressIndicator_H.SubtitleSize
+            Text: =ThisItem.Subtitle
+            VerticalAlign: =VerticalAlign.Top
+            Width: =gal_ProgressIndicator_H.TemplateWidth
+            Y: |-
+                =If(IsBlank(ThisItem.Title),
+                    lbl_Title_H.Y,
+                    lbl_Title_H.Y+lbl_Title_H.Height
+                )
+            ZIndex: =6
+
+        img_Image_H As image:
+            BorderColor: =If(ThisItem.IsCurrent, cmp_ProgressIndicator_H.ShapeBorderColorCurrent, cmp_ProgressIndicator_H.ShapeBorderColor)
+            BorderStyle: =If(ThisItem.Image=Blank(), BorderStyle.None, BorderStyle.Solid)
+            BorderThickness: =cmp_ProgressIndicator_H.ShapeBorderThickness
+            Height: =cmp_ProgressIndicator_H.ShapeHeightWidth
+            Image: =If(IsBlank(ThisItem.Image),SampleImage,ThisItem.Image)
+            PaddingBottom: =Self.PaddingTop
+            PaddingLeft: =Self.PaddingTop
+            PaddingRight: =Self.PaddingTop
+            PaddingTop: =cmp_ProgressIndicator_H.ImagePadding
+            RadiusBottomLeft: =Self.RadiusTopLeft
+            RadiusBottomRight: =Self.RadiusTopLeft
+            RadiusTopLeft: =If(cmp_ProgressIndicator_H.IsSquareShape,0,180)
+            RadiusTopRight: =Self.RadiusTopLeft
+            Visible: =!IsBlank(ThisItem.Image)
+            Width: =Self.Height
+            X: =(gal_ProgressIndicator_H.TemplateWidth-Self.Width)/2
+            Y: =cmp_ProgressIndicator_H.SpacingBorderToShape
+            ZIndex: =7
+
+        ico_Icon_H As icon.ArrowsUpDown:
+            Color: =cmp_ProgressIndicator_H.IconColor
+            Height: =ico_Circle_H.Height*0.6
+            Icon: =ThisItem.Icon
+            Visible: =IsBlank(ThisItem.Image)
+            Width: =Self.Height
+            X: =ico_Circle_H.X+(ico_Circle_H.Width-Self.Width)/2
+            Y: =ico_Circle_H.Y+(ico_Circle_H.Height-Self.Height)/2
+            ZIndex: =8
+
+        ico_StatusCircle_H As circle:
+            BorderColor: =cmp_ProgressIndicator_H.StatusBorderColor
+            BorderThickness: =cmp_ProgressIndicator_H.ShapeBorderThickness
+            Fill: =Switch(ThisItem.Status,"Success", cmp_ProgressIndicator_H.StatusFillSuccess, "Fail", cmp_ProgressIndicator_H.StatusFillFail, cmp_ProgressIndicator_H.StatusFill)
+            Height: =22
+            OnSelect: =Select(Parent)
+            Visible: =cmp_ProgressIndicator_H.IsStatusVisible And !cmp_ProgressIndicator_H.IsSquareShape
+            Width: =22
+            X: =Parent.TemplateWidth/2+16
+            Y: =57
+            ZIndex: =9
+
+        ico_StatusSquare_H As rectangle:
+            BorderColor: =cmp_ProgressIndicator_H.StatusBorderColor
+            BorderThickness: =cmp_ProgressIndicator_H.ShapeBorderThickness
+            Fill: =Switch(ThisItem.Status,"Success", cmp_ProgressIndicator_H.StatusFillSuccess, "Fail", cmp_ProgressIndicator_H.StatusFillFail, cmp_ProgressIndicator_H.StatusFill)
+            Height: =22
+            OnSelect: =Select(Parent)
+            Visible: =cmp_ProgressIndicator_H.IsStatusVisible And cmp_ProgressIndicator_H.IsSquareShape
+            Width: =22
+            X: =Parent.TemplateWidth/2+20
+            Y: =61
+            ZIndex: =10
+
+        ico_StatusIcon_H As icon.ArrowsUpDown:
+            Color: =Switch(ThisItem.Status, "Success", cmp_ProgressIndicator_H.StatusColorSuccess, "Fail", cmp_ProgressIndicator_H.StatusColorFail, cmp_ProgressIndicator_H.StatusColor)
+            Height: =13
+            Icon: =Switch(ThisItem.Status, "Success", Icon.Check, "Fail", Icon.Cancel, Blank())
+            Visible: =cmp_ProgressIndicator_H.IsStatusVisible
+            Width: =If(cmp_ProgressIndicator_H.IsSquareShape, ico_StatusSquare_H.Width, ico_StatusCircle_H.Width)
+            X: =If(cmp_ProgressIndicator_H.IsSquareShape, ico_StatusSquare_H.X, ico_StatusCircle_H.X)
+            Y: =If(cmp_ProgressIndicator_H.IsSquareShape, 65, 61)
+            ZIndex: =11
+
